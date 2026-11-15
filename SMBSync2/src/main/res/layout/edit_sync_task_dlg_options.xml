@@ -220,6 +220,57 @@
         </LinearLayout>
 
 
+        <LinearLayout
+            android:id="@+id/edit_sync_task_incremental_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fork_incremental_title"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <CheckedTextView
+                    android:id="@+id/edit_sync_task_incremental_enable"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:minHeight="44dp"
+                    android:gravity="center_vertical"
+                    android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                    android:text="@string/fork_incremental_enable"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                <TextView
+                    android:id="@+id/edit_sync_task_incremental_help"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:gravity="center"
+                    android:text="?"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/fork_incremental_help" />
+            </LinearLayout>
+
+            <CheckedTextView
+                android:id="@+id/edit_sync_task_incremental_include_old"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                android:gravity="center_vertical"
+                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+                android:text="@string/fork_incremental_older_changes"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
         <include layout="@layout/divider_line1_turquoise" />
 
         <CheckedTextView
