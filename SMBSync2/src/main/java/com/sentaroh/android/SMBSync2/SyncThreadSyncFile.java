@@ -1232,7 +1232,40 @@ public class SyncThreadSyncFile {
     static public int syncCopyInternalToSmb(SyncThreadWorkArea stwa, SyncTaskItem sti,
                                             String from_path, String to_path) {
         File mf = new File(from_path);
-        return moveCopyInternalToSmb(stwa, sti, false, from_path, from_path, mf, to_path, to_path);
+        stwa.incrementalCopyActive=false;
+        stwa.incrementalTargetNewestTime=0L;
+        try {
+            if (sti.isSyncIncrementalFromTargetNewest()) {
+                SyncThread.showMsg(stwa, false, sti.getSyncTaskName(), "I", "", "",
+                        stwa.context.getString(R.string.fork_incremental_scanning));
+                JcifsFile target = new JcifsFile(to_path + "/", stwa.targetAuth);
+                long latest = IncrementalSmbCopy.newestTargetTime(target);
+                if (latest > 0) {
+                    stwa.incrementalCopyActive=true;
+                    stwa.incrementalTargetNewestTime=latest;
+                    String when=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(latest));
+                    SyncThread.showMsg(stwa, false, sti.getSyncTaskName(), "I", "", "",
+                            stwa.context.getString(R.string.fork_incremental_watermark, when));
+                } else {
+                    SyncThread.showMsg(stwa, false, sti.getSyncTaskName(), "I", "", "",
+                            stwa.context.getString(R.string.fork_incremental_empty));
+                }
+            }
+            return moveCopyInternalToSmb(stwa, sti, false, from_path, from_path, mf, to_path, to_path);
+        } catch (IOException e) {
+            String msg=stwa.context.getString(R.string.fork_incremental_scan_failed, e.getMessage());
+            stwa.gp.syncThreadCtrl.setThreadMessage(msg);
+            SyncThread.showMsg(stwa, true, sti.getSyncTaskName(), "E", "", "", msg);
+            return SyncTaskItem.SYNC_STATUS_ERROR;
+        } catch (JcifsException e) {
+            String msg=stwa.context.getString(R.string.fork_incremental_scan_failed, e.getMessage());
+            stwa.gp.syncThreadCtrl.setThreadMessage(msg);
+            SyncThread.showMsg(stwa, true, sti.getSyncTaskName(), "E", "", "", msg);
+            return SyncTaskItem.SYNC_STATUS_ERROR;
+        } finally {
+            stwa.incrementalCopyActive=false;
+            stwa.incrementalTargetNewestTime=0L;
+        }
     }
 
     static public int syncMoveInternalToSmb(SyncThreadWorkArea stwa, SyncTaskItem sti,
@@ -1335,6 +1368,13 @@ public class SyncThreadSyncFile {
                     if (SyncThread.isDirectorySelectedByFileName(stwa, t_from_path) &&
                             !SyncThread.isHiddenFile(stwa, sti, mf) &&
                             SyncThread.isFileSelected(stwa, sti, t_from_path, from_path, mf.length(), mf.lastModified())) {
+                        boolean olderThanTarget=stwa.incrementalCopyActive &&
+                                IncrementalSmbCopy.isOlderThanTarget(mf, stwa.incrementalTargetNewestTime);
+                        if (olderThanTarget && !sti.isSyncIncrementalIncludeOlderChanges()) {
+                            stwa.totalIgnoreCount++;
+                            return SyncTaskItem.SYNC_STATUS_SUCCESS;
+                        }
+
                         String parsed_to_path=to_path;
                         if (sti.isTargetUseTakenDateTimeToDirectoryNameKeyword() && stwa.replaceKeywordRequiredAtWhileSync)
                             parsed_to_path=convertToExifDateTime(stwa, sti, new FileInputStream(mf), mf.lastModified(), from_path, to_path);
@@ -1350,6 +1390,11 @@ public class SyncThreadSyncFile {
                             SyncThread.createDirectoryToSmb(stwa, sti, tf.getParent(), stwa.targetAuth);
 
                         boolean tf_exists = tf.exists();
+                        // Older files missing on the destination are not backfilled.
+                        if (olderThanTarget && !tf_exists) {
+                            stwa.totalIgnoreCount++;
+                            return SyncTaskItem.SYNC_STATUS_SUCCESS;
+                        }
                         if (!tf_exists || tf.isFile()) {
                             if (tf_exists && !sti.isSyncOverrideCopyMoveFile()) {
                                 //Ignore override the file
