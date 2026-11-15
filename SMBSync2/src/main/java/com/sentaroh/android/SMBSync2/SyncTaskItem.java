@@ -45,6 +45,16 @@ class SyncTaskItem implements Serializable, Cloneable {
     private boolean isChecked = false;
 
     private boolean syncOptionSyncTestMode = false;
+    // Fork option: copy only files newer than the newest timestamp on the SMB destination.
+    // Older existing files can optionally be checked for updates.
+    private boolean syncIncrementalFromTargetNewest = false;
+    private boolean syncIncrementalIncludeOlderChanges = false;
+
+    public boolean isSyncIncrementalFromTargetNewest() {return syncIncrementalFromTargetNewest;}
+    public void setSyncIncrementalFromTargetNewest(boolean enabled) {syncIncrementalFromTargetNewest=enabled;}
+    public boolean isSyncIncrementalIncludeOlderChanges() {return syncIncrementalIncludeOlderChanges;}
+    public void setSyncIncrementalIncludeOlderChanges(boolean enabled) {syncIncrementalIncludeOlderChanges=enabled;}
+
 
     private int syncTaskPosition = 0;
 
@@ -747,6 +757,8 @@ class SyncTaskItem implements Serializable, Cloneable {
                 (syncTasｋGroup.equals(sti.getSyncTaskGroup())) &&
                 (syncTaskEnabled==sti.isSyncTaskAuto()) &&
                 (syncOptionSyncTestMode==sti.isSyncTestMode()) &&
+                (syncIncrementalFromTargetNewest==sti.isSyncIncrementalFromTargetNewest()) &&
+                (syncIncrementalIncludeOlderChanges==sti.isSyncIncrementalIncludeOlderChanges()) &&
                 (syncTaskType.equals(sti.getSyncTaskType())) &&
                 (syncMasterFolderError==sti.getMasterFolderError()) &&
                 (syncTargetFolderError==sti.getTargetFolderError()) &&
