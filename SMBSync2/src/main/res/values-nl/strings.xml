@@ -35,4 +35,14 @@
     <string name="fork_wifi_skip_help_body">Komt het IP-adres van je telefoon niet overeen met de lijst, dan wordt deze taak overgeslagen in plaats van als synchronisatiefout geregistreerd. Handig voor geplande taken wanneer je niet thuis bent.</string>
     <string name="fork_wifi_public_help_title">Openbare IP-adressen toestaan</string>
     <string name="fork_wifi_public_help_body">Staat toe dat de taak start wanneer het gevonden IP-adres openbaar is. Hiermee krijg je niet automatisch toegang tot je NAS en wordt externe toegang niet ingesteld. Laat dit uit voor gewone back-ups naar je NAS thuis.</string>
+    <string name="fork_incremental_title">Incrementele fotoback-up</string>
+    <string name="fork_incremental_enable">Alleen kopiëren vanaf nieuwste bestand op doel</string>
+    <string name="fork_incremental_older_changes">Ook wijzigingen aan oudere bestanden op doel meenemen</string>
+    <string name="fork_incremental_help">Uitleg incrementeel kopiëren</string>
+    <string name="fork_incremental_help_text">Alleen voor kopieertaken van de interne telefoonopslag naar SMB, zonder hernoemen van doelmappen op basis van fotodatum. De app zoekt eerst het laatst gewijzigde bestand op de NAS, ook in submappen. Oudere bronbestanden worden overgeslagen op basis van de oorspronkelijke fotodatum; als deze ontbreekt, wordt de datum in de bestandsnaam of de wijzigingsdatum gebruikt. Met ‘wijzigingen aan oudere bestanden’ aan worden oudere bestanden die al op het doel staan alsnog gecontroleerd en bij verschillen bijgewerkt. Oudere ontbrekende bestanden worden niet alsnog toegevoegd. Een leeg doel krijgt eerst een volledige kopie. LET OP: een gewijzigde tijd op de NAS kan de grensdatum verzetten. Ook onjuiste of ontbrekende fotodatums kunnen tot overgeslagen bestanden leiden. Dit is een optionele versnelling, geen volledige back-upstrategie.</string>
+    <string name="fork_incremental_unsupported">Incrementeel kopiëren ondersteunt momenteel alleen Kopiëren van de interne Android-opslag naar een SMB-map, zonder doelmappen op basis van de fotodatum te hernoemen. Schakel de optie voor deze taak uit.</string>
+    <string name="fork_incremental_scanning">Nieuwste bestand op SMB-doel bepalen…</string>
+    <string name="fork_incremental_watermark">Incrementele kopie: laatste wijziging op doel %1$s. Oudere bronbestanden worden overgeslagen tenzij wijzigingen aan oudere bestanden aanstaan.</string>
+    <string name="fork_incremental_empty">Incrementele kopie: geen bestanden op doel gevonden. De eerste kopie wordt volledig uitgevoerd.</string>
+    <string name="fork_incremental_scan_failed">Incrementeel kopiëren gestopt: het doel kon niet betrouwbaar worden doorzocht. %1$s</string>
 </resources>
