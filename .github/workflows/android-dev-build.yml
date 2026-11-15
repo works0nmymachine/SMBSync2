@@ -21,18 +21,24 @@ jobs:
       - name: Check out development code
         uses: actions/checkout@v4
 
-      - name: Set up Java 11 for legacy Android Gradle plugin
+      - name: Set up Java 17 for Android SDK command-line tools
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '11'
-          cache: gradle
+          java-version: '17'
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
       - name: Install legacy SDK and build tools
         run: sdkmanager "platforms;android-29" "build-tools;30.0.3"
+
+      - name: Switch to Java 11 for legacy Android Gradle plugin
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: gradle
 
       - name: Build debug APK
         shell: bash
