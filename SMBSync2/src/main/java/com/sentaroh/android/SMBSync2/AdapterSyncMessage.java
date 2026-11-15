@@ -243,7 +243,17 @@ public class AdapterSyncMessage extends ArrayAdapter<SyncMessageItem> {
             holder.tv_row_time.setText(o.getTime());
             holder.tv_row_date.setText(o.getDate());
             if (show_title) holder.tv_row_title.setText(o.getTitle());
-            if (show_msg) holder.tv_row_msg.setText(o.getMessage());
+            if (show_msg) {
+                // The original error stays in the log; the explanation is only UI text.
+                if ("E".equals(o.getCategory())) {
+                    String cause = SyncErrorExplainer.describe(c, o.getMessage());
+                    holder.tv_row_msg.setText(c.getString(R.string.fork_possible_cause)
+                            + ": " + cause + "\n\n"
+                            + c.getString(R.string.fork_technical_details) + ":\n" + o.getMessage());
+                } else {
+                    holder.tv_row_msg.setText(o.getMessage());
+                }
+            }
             if (show_path) holder.tv_row_path.setText(o.getPath());
             if (show_type) holder.tv_row_type.setText(o.getType());
 /*
