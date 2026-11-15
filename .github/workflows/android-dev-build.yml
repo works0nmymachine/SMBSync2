@@ -1,0 +1,50 @@
+name: Android dev APK build
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build debug APK (Android SDK 29 / Java 11)
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out development code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 11 for legacy Android Gradle plugin
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install legacy SDK and build tools
+        run: sdkmanager "platforms;android-29" "build-tools;30.0.3"
+
+      - name: Build debug APK
+        shell: bash
+        run: |
+          chmod +x gradlew
+          ./gradlew :SMBSync2:assembleDebug --no-daemon --stacktrace
+
+      - name: Upload installable debug APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: SMBSync2-dev-debug-apk
+          path: SMBSync2/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
