@@ -164,6 +164,10 @@ public class SyncThread extends Thread {
 
         public PrintWriter syncHistoryWriter = null;
 
+        // Snapshot of the destination time at the start of the current Copy task.
+        public boolean incrementalCopyActive = false;
+        public long incrementalTargetNewestTime = 0L;
+
         public int syncDifferentFileAllowableTime = 0;
         public int offsetOfDaylightSavingTime=0;
         public int syncTaskRetryCount = 0;
@@ -1055,6 +1059,17 @@ public class SyncThread extends Thread {
 
     private int performSync(SyncTaskItem sti) {
         int sync_result = 0;
+        if (sti.isSyncIncrementalFromTargetNewest() &&
+                !(SyncTaskItem.SYNC_TASK_TYPE_COPY.equals(sti.getSyncTaskType()) &&
+                        SyncTaskItem.SYNC_FOLDER_TYPE_INTERNAL.equals(sti.getMasterFolderType()) &&
+                        SyncTaskItem.SYNC_FOLDER_TYPE_SMB.equals(sti.getTargetFolderType()) &&
+                        !sti.isTargetUseTakenDateTimeToDirectoryNameKeyword() &&
+                        !isReplaceKeywordRequiredAtWhileSync(sti.getTargetDirectoryName()))) {
+            String msg=mStwa.context.getString(R.string.fork_incremental_unsupported);
+            showMsg(mStwa, true, sti.getSyncTaskName(), "E", "", "", msg);
+            mGp.syncThreadCtrl.setThreadMessage(msg);
+            return SyncTaskItem.SYNC_STATUS_ERROR;
+        }
         long time_millis = System.currentTimeMillis();
         String from, from_temp, to, to_temp;
         if (sti.getMasterFolderType().equals(SyncTaskItem.SYNC_FOLDER_TYPE_INTERNAL) &&
