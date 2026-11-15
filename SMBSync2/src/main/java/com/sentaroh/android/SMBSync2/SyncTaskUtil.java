@@ -7993,6 +7993,12 @@ public class SyncTaskUtil {
                 }
             }
 
+            // Fork fields 102/103 are optional; older profiles simply leave them disabled.
+            if (!parm[102].equals("") && !parm[102].equals("end"))
+                stli.setSyncIncrementalFromTargetNewest(parm[102].equals("1"));
+            if (!parm[103].equals("") && !parm[103].equals("end"))
+                stli.setSyncIncrementalIncludeOlderChanges(parm[103].equals("1"));
+
             if (stli.getMasterSmbProtocol().equals(SyncTaskItem.SYNC_FOLDER_SMB_PROTOCOL_SYSTEM))
                 stli.setMasterSmbProtocol(SyncTaskItem.SYNC_FOLDER_SMB_PROTOCOL_SMB1);
             if (stli.getTargetSmbProtocol().equals(SyncTaskItem.SYNC_FOLDER_SMB_PROTOCOL_SYSTEM))
@@ -8544,6 +8550,8 @@ public class SyncTaskUtil {
                             (item.getSyncFilterFileDateValue()) + "\t" +                                //100
 
                             (item.getSyncOptionMaxFileNameLength()) + "\t" +                    //101
+                            (item.isSyncIncrementalFromTargetNewest() ? "1" : "0") + "\t" + //102 (fork)
+                            (item.isSyncIncrementalIncludeOlderChanges() ? "1" : "0") + "\t" + //103 (fork)
 
                             "end"
                     ;
