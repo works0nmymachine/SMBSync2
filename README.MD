@@ -75,3 +75,13 @@ Please refer to the link below.
   - [Bouncy Castle Provider](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on/1.58)
 - This software includes the work that is distributed in the BSD 3-Clause "New" or "Revised" License
   - [markdownj](https://github.com/myabc/markdownj)
+
+## Fork improvements (dev)
+
+- The **Messages** tab displays plain-language causes for common SMB sync errors while preserving raw technical logs. Tap a message to inspect/copy it; long-press to copy, or use **Copy all logs**. [Debugging guide](docs/FORK_DEBUGGING.md)
+- Sync task network options have contextual **?** explanation buttons for Wi-Fi requirements, IP address lists, and public IP restrictions.
+- **Incremental photo backup (experimental):** for a **Copy** task from internal Android storage to a fixed SMB destination, optionally copy only files newer than the destination's latest modification time. An additional toggle checks already-existing older target files for changes. [Detailed behavior, limitations, and test cases](docs/INCREMENTAL_BACKUP.md)
+- The **Android dev APK build** GitHub Action builds a debug APK from `dev` and makes it available as a workflow artifact when the build succeeds.
+- The **Promote dev to prd** GitHub Action can be run manually to fast-forward `prd` safely; it never force-pushes or promotes automatically.
+
+**Testing warning:** Incremental backup is intentionally opt-in and can skip older missing files. Keep regular full Copy backups until this feature has been tested with a disposable test folder and your own NAS. A debug APK's signature may not match a Play Store install, so export application settings before replacing an installed package.
