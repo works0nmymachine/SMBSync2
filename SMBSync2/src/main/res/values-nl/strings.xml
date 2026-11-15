@@ -18,4 +18,21 @@
     <string name="fork_error_timeout">De verbinding duurde te lang. Controleer of de NAS wakker is, het netwerk stabiel is en SMB-poort 445 bereikbaar is.</string>
     <string name="fork_error_protocol">Client en server gebruiken mogelijk geen compatibele SMB-versie of ondertekening. Controleer het SMB-protocol en de serverinstellingen.</string>
     <string name="fork_error_unknown">De bewerking is mislukt, maar de exacte oorzaak blijkt niet uit deze melding. Kopieer de technische details hieronder voor nader onderzoek.</string>
+    <!-- Contextuele uitleg bij netwerkvoorwaarden in deze fork. -->
+    <string name="fork_wifi_help_accessibility">Uitleg over wifi-voorwaarde</string>
+    <string name="fork_wifi_iplist_help_accessibility">Uitleg over IP-adressenlijst</string>
+    <string name="fork_wifi_skip_help_accessibility">Uitleg over overslaan bij verkeerd IP-adres</string>
+    <string name="fork_wifi_public_help_accessibility">Uitleg over openbare IP-adressen toestaan</string>
+    <string name="fork_wifi_help_title">Wanneer mag synchronisatie starten?</string>
+    <string name="fork_wifi_help_recommendation">Voor een NAS thuis is een lijst met het IP-bereik van je thuisnetwerk een praktische beperking. Dit is geen veilige herkenning van je wifinetwerk: andere netwerken kunnen hetzelfde bereik gebruiken. Laat openbare IP-adressen uitgeschakeld als dat kan.</string>
+    <string name="fork_wifi_off_help">Er is geen wifi-verbinding vereist. Synchronisatie kan ook via een ander netwerk worden geprobeerd, maar de beperking voor openbare IP-adressen blijft gelden.</string>
+    <string name="fork_wifi_any_help">Vereist een actieve wifi-verbinding, maar elk wifinetwerk is toegestaan. Er wordt niet gecontroleerd of je thuis bent.</string>
+    <string name="fork_wifi_private_help">Vereist een privé-IPv4-adres (10.x.x.x, 172.16–31.x.x of 192.168.x.x). Dit kan ook van een ander netwerk of VPN komen, niet per se van je thuiswifi.</string>
+    <string name="fork_wifi_list_help">Vergelijkt een IP-adres van deze telefoon met de toegestane lijst. Gebruik het thuis-IP van de telefoon of bijvoorbeeld 192.168.1.*. Dit is niet het IP-adres van de NAS.</string>
+    <string name="fork_wifi_list_help_title">Welk IP-adres vul je hier in?</string>
+    <string name="fork_wifi_list_help_body">Vul het privé-IP-adres van je TELEFOON op je thuisnetwerk in, of het subnet met een jokerteken (zoals 192.168.1.*). Niet dat van je NAS. Zoek het telefoonadres in de wifi-instellingen van Android. Andere netwerken kunnen hetzelfde bereik gebruiken en VPN of andere netwerkinterfaces kunnen de detectie van deze oudere app beïnvloeden.</string>
+    <string name="fork_wifi_skip_help_title">Overslaan in plaats van een fout melden</string>
+    <string name="fork_wifi_skip_help_body">Komt het IP-adres van je telefoon niet overeen met de lijst, dan wordt deze taak overgeslagen in plaats van als synchronisatiefout geregistreerd. Handig voor geplande taken wanneer je niet thuis bent.</string>
+    <string name="fork_wifi_public_help_title">Openbare IP-adressen toestaan</string>
+    <string name="fork_wifi_public_help_body">Staat toe dat de taak start wanneer het gevonden IP-adres openbaar is. Hiermee krijg je niet automatisch toegang tot je NAS en wordt externe toegang niet ingesteld. Laat dit uit voor gewone back-ups naar je NAS thuis.</string>
 </resources>
