@@ -36,4 +36,15 @@
     <string name="fork_wifi_skip_help_body">If your phone\'s IP address does not match the list, mark this task as skipped instead of treating it as a sync error. Useful when the task is scheduled and you are away from home.</string>
     <string name="fork_wifi_public_help_title">Allow public IP addresses</string>
     <string name="fork_wifi_public_help_body">Allows the task to start even when the phone\'s detected address is public. This does not grant NAS permissions or configure remote access. Leave disabled for normal backups to a NAS at home.</string>
+    <!-- Incremental phone-to-SMB copy: opt-in, never deletes destination files. -->
+    <string name="fork_incremental_title">Incremental photo backup</string>
+    <string name="fork_incremental_enable">Copy only since newest file on destination</string>
+    <string name="fork_incremental_older_changes">Also copy changes to older files already on destination</string>
+    <string name="fork_incremental_help">How incremental copy works</string>
+    <string name="fork_incremental_help_text">For Copy tasks from internal phone storage to an SMB folder only. Before copying, the app finds the most recently modified file on the target (including subfolders). It skips source files whose original photo date is older; it uses the filename timestamp or file modification time when an original photo date is unavailable. If older-file changes are enabled, it also checks older files that already exist on the destination and copies them when different, without backfilling missing older files. The first backup to an empty folder is a full copy. WARNING: changing the time of an old destination file can move the cutoff forward, and photos with missing/incorrect date metadata can be skipped. This is an optional speed optimization, not a complete backup strategy.</string>
+    <string name="fork_incremental_unsupported">Incremental copy currently supports only Copy tasks from internal Android storage to an SMB folder, without date-based target folder renaming. Disable the option for this task.</string>
+    <string name="fork_incremental_scanning">Checking newest file on SMB destination…</string>
+    <string name="fork_incremental_watermark">Incremental copy: latest target modification %1$s. Older source files will be skipped unless older changes are enabled.</string>
+    <string name="fork_incremental_empty">Incremental copy: no destination files found. Full initial copy will run.</string>
+    <string name="fork_incremental_scan_failed">Incremental copy stopped: the destination could not be scanned safely. %1$s</string>
 </resources>
