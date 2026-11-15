@@ -625,7 +625,7 @@ public class SyncTaskEditor extends DialogFragment {
                 ctv_sync_allow_global_ip_addr.setChecked(sv.allow_global_ip_addr);
                 ((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_enable)).setChecked(sv.incremental_from_target);
                 ((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_include_old)).setChecked(sv.incremental_include_old_changes);
-                updateIncrementalOptionsVisibility(n_sti);
+                if (mCurrentSyncTaskItem != null) updateIncrementalOptionsVisibility(mCurrentSyncTaskItem);
                 ctv_edit_sync_tak_option_do_not_use_rename_when_smb_file_write.setChecked(sv.do_not_use_rename_when_smb_file_write);
                 ctv_never_overwrite_target_file_newer_than_the_master_file.setChecked(sv.never_overwrite_target_file_newer_than_the_master_file);
                 ctv_ignore_dst_difference.setChecked(false);
