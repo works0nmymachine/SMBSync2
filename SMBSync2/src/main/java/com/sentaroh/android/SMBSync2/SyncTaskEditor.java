@@ -298,6 +298,8 @@ public class SyncTaskEditor extends DialogFragment {
         public boolean sync_when_cahrging=false;
         public boolean skip_if_ssid_invalid=false;
         public boolean allow_global_ip_addr=false;
+        public boolean incremental_from_target=false;
+        public boolean incremental_include_old_changes=false;
         public boolean do_not_use_rename_when_smb_file_write=false;
         public boolean never_overwrite_target_file_newer_than_the_master_file=false;
         public boolean ignore_dst_difference=false;
@@ -447,6 +449,8 @@ public class SyncTaskEditor extends DialogFragment {
         sv.sync_when_cahrging=ctv_task_sync_when_cahrging.isChecked();
         sv.skip_if_ssid_invalid=ctv_task_skip_if_ssid_invalid.isChecked();
         sv.allow_global_ip_addr=ctv_sync_allow_global_ip_addr.isChecked();
+        sv.incremental_from_target=((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_enable)).isChecked();
+        sv.incremental_include_old_changes=((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_include_old)).isChecked();
         sv.do_not_use_rename_when_smb_file_write=ctv_edit_sync_tak_option_do_not_use_rename_when_smb_file_write.isChecked();
         sv.never_overwrite_target_file_newer_than_the_master_file=ctv_never_overwrite_target_file_newer_than_the_master_file.isChecked();
         sv.ignore_dst_difference=ctv_ignore_dst_difference.isChecked();
@@ -619,6 +623,9 @@ public class SyncTaskEditor extends DialogFragment {
                 ctv_task_sync_when_cahrging.setChecked(sv.sync_when_cahrging);
                 ctv_task_skip_if_ssid_invalid.setChecked(sv.skip_if_ssid_invalid);
                 ctv_sync_allow_global_ip_addr.setChecked(sv.allow_global_ip_addr);
+                ((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_enable)).setChecked(sv.incremental_from_target);
+                ((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_include_old)).setChecked(sv.incremental_include_old_changes);
+                updateIncrementalOptionsVisibility(n_sti);
                 ctv_edit_sync_tak_option_do_not_use_rename_when_smb_file_write.setChecked(sv.do_not_use_rename_when_smb_file_write);
                 ctv_never_overwrite_target_file_newer_than_the_master_file.setChecked(sv.never_overwrite_target_file_newer_than_the_master_file);
                 ctv_ignore_dst_difference.setChecked(false);
@@ -3789,6 +3796,7 @@ public class SyncTaskEditor extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 setSyncTaskTypeFromSpinnere(spinnerSyncType, n_sti);
+                updateIncrementalOptionsVisibility(n_sti);
                 if (spinnerSyncType.getSelectedItem().toString().equals(mContext.getString(R.string.msgs_main_sync_profile_dlg_archive))) {
                     if (n_sti.getTargetFolderType().equals(SyncTaskItem.SYNC_FOLDER_TYPE_ZIP)) {
                         n_sti.setTargetFolderType(SyncTaskItem.SYNC_FOLDER_TYPE_INTERNAL);
@@ -3806,6 +3814,35 @@ public class SyncTaskEditor extends DialogFragment {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        // Incremental back-up: available only for Copy, internal-phone -> SMB tasks.
+        final CheckedTextView incrementalEnabled = (CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_enable);
+        final CheckedTextView incrementalOlderChanges = (CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_include_old);
+        incrementalEnabled.setChecked(n_sti.isSyncIncrementalFromTargetNewest());
+        incrementalOlderChanges.setChecked(n_sti.isSyncIncrementalIncludeOlderChanges());
+        incrementalEnabled.setOnClickListener(new OnClickListener() {
+            @Override public void onClick(View v) {
+                incrementalEnabled.setChecked(!incrementalEnabled.isChecked());
+                updateIncrementalOptionsVisibility(n_sti);
+                checkSyncTaskOkButtonEnabled(mDialog, type, n_sti, dlg_msg);
+            }
+        });
+        incrementalOlderChanges.setOnClickListener(new OnClickListener() {
+            @Override public void onClick(View v) {
+                incrementalOlderChanges.setChecked(!incrementalOlderChanges.isChecked());
+                checkSyncTaskOkButtonEnabled(mDialog, type, n_sti, dlg_msg);
+            }
+        });
+        mDialog.findViewById(R.id.edit_sync_task_incremental_help).setOnClickListener(new OnClickListener() {
+            @Override public void onClick(View v) {
+                new android.app.AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.fork_incremental_help)
+                    .setMessage(R.string.fork_incremental_help_text)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            }
+        });
+        updateIncrementalOptionsVisibility(n_sti);
+
         final LinearLayout ll_wifi_condition_view = (LinearLayout) mDialog.findViewById(R.id.edit_sync_task_option_wifi_condition_view);
         final LinearLayout ll_wifi_wl_view = (LinearLayout) mDialog.findViewById(R.id.edit_sync_task_option_wl_view);
 //        final LinearLayout ll_wifi_wl_ap_view = (LinearLayout) mDialog.findViewById(R.id.edit_sync_task_option_ap_list_view);
@@ -5273,6 +5310,8 @@ public class SyncTaskEditor extends DialogFragment {
         nstli.setSyncOptionWifiStatusOption(wifi_sel);
         nstli.setSyncOptionTaskSkipIfConnectAnotherWifiSsid(ctv_task_skip_if_ssid_invalid.isChecked());
         nstli.setSyncOptionSyncAllowGlobalIpAddress(ctv_sync_allow_global_ip_addr.isChecked());
+        nstli.setSyncIncrementalFromTargetNewest(((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_enable)).isChecked());
+        nstli.setSyncIncrementalIncludeOlderChanges(((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_include_old)).isChecked());
 
         nstli.setSyncOptionSyncWhenCharging(ctv_task_sync_when_cahrging.isChecked());
 
@@ -5389,6 +5428,19 @@ public class SyncTaskEditor extends DialogFragment {
 //        CommonDialog.setDlgBoxSizeLimit(dialog, false);
 
         dialog.show();
+    }
+
+    private void updateIncrementalOptionsVisibility(SyncTaskItem sti) {
+        View options=mDialog.findViewById(R.id.edit_sync_task_incremental_options);
+        if (options==null) return;
+        boolean supported=SyncTaskItem.SYNC_TASK_TYPE_COPY.equals(sti.getSyncTaskType()) &&
+                SyncTaskItem.SYNC_FOLDER_TYPE_INTERNAL.equals(sti.getMasterFolderType()) &&
+                SyncTaskItem.SYNC_FOLDER_TYPE_SMB.equals(sti.getTargetFolderType()) &&
+                !sti.isTargetUseTakenDateTimeToDirectoryNameKeyword();
+        options.setVisibility(supported ? View.VISIBLE : View.GONE);
+        CheckedTextView enabled=(CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_enable);
+        View older=mDialog.findViewById(R.id.edit_sync_task_incremental_include_old);
+        older.setVisibility(enabled.isChecked() ? View.VISIBLE : View.GONE);
     }
 
     private void setSyncTaskTypeFromSpinnere(Spinner spinner, SyncTaskItem n_stli) {
