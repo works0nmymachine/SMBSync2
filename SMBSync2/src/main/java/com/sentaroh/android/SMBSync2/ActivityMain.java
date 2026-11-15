@@ -26,6 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -1002,6 +1003,7 @@ public class ActivityMain extends AppCompatActivity {
 
         mGp.syncMessageListView = (ListView) mMessageView.findViewById(R.id.main_message_list_view);
         mGp.syncMessageListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        configureMessageCopyActions();
         mGp.syncTaskListView = (ListView) mSyncTaskView.findViewById(R.id.main_sync_task_view_list);
         mGp.syncTaskEmptyMessage=(TextView)mSyncTaskView.findViewById(R.id.main_sync_task_view_empty_message);
         mGp.syncTaskEmptyMessage.setTextColor(mGp.themeColorList.text_color_warning);
@@ -5014,6 +5016,80 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
         ContextButtonUtil.setButtonLabelListener(mActivity, mContextMessageButtonClear, mContext.getString(R.string.msgs_msg_cont_label_clear));
+    }
+
+    /**
+     * Copy a single sync message (long-press), inspect/copy it (tap),
+     * or copy the full in-app Messages log with one button.
+     */
+    private void configureMessageCopyActions() {
+        Button copyAllButton = (Button) mMessageView.findViewById(R.id.main_message_copy_all_button);
+        copyAllButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mGp.syncMessageListAdapter == null || mGp.syncMessageListAdapter.getCount() == 0) {
+                    CommonUtilities.showToastMessageShort(mActivity, getString(R.string.fork_no_logs));
+                    return;
+                }
+                StringBuilder all = new StringBuilder();
+                for (int i = 0; i < mGp.syncMessageListAdapter.getCount(); i++) {
+                    if (i > 0) all.append("\n\n");
+                    all.append(formatSyncMessageForClipboard(mGp.syncMessageListAdapter.getItem(i)));
+                }
+                copySyncTextToClipboard(all.toString());
+            }
+        });
+        mGp.syncMessageListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final SyncMessageItem message = mGp.syncMessageListAdapter.getItem(position);
+                new AlertDialog.Builder(mActivity)
+                        .setTitle(R.string.fork_message_details)
+                        .setMessage(formatSyncMessageForClipboard(message))
+                        .setPositiveButton(R.string.fork_copy_message, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                copySyncTextToClipboard(formatSyncMessageForClipboard(message));
+                            }
+                        })
+                        .setNegativeButton(R.string.fork_close, null)
+                        .show();
+            }
+        });
+        mGp.syncMessageListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                copySyncTextToClipboard(formatSyncMessageForClipboard(mGp.syncMessageListAdapter.getItem(position)));
+                return true;
+            }
+        });
+    }
+
+    private String formatSyncMessageForClipboard(SyncMessageItem message) {
+        StringBuilder text = new StringBuilder();
+        text.append(message.getDate()).append(" ").append(message.getTime())
+                .append(" [").append(message.getCategory()).append("]");
+        if (!message.getTitle().isEmpty()) text.append("\n").append(message.getTitle());
+        if (!message.getPath().isEmpty()) text.append("\n").append(message.getPath());
+        if (!message.getType().isEmpty()) text.append("\n").append(message.getType());
+        if ("E".equals(message.getCategory())) {
+            text.append("\n").append(getString(R.string.fork_possible_cause))
+                    .append(": ").append(SyncErrorExplainer.describe(mActivity, message.getMessage()));
+        }
+        if (!message.getMessage().isEmpty()) {
+            text.append("\n").append(getString(R.string.fork_technical_details))
+                    .append(":\n").append(message.getMessage());
+        }
+        return text.toString();
+    }
+
+    private void copySyncTextToClipboard(String value) {
+        android.content.ClipboardManager clipboard =
+                (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+            clipboard.setPrimaryClip(ClipData.newPlainText("SMBSync2 messages", value));
+            CommonUtilities.showToastMessageShort(mActivity, getString(R.string.fork_logs_copied));
+        }
     }
 
     private void setMessageContextButtonNormalMode() {
