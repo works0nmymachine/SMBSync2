@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!-- Fork: explain errors and make the Messages tab copyable. -->
+    <string name="fork_possible_cause">Possible cause</string>
+    <string name="fork_technical_details">Technical details</string>
+    <string name="fork_copy_all_logs">Copy all logs</string>
+    <string name="fork_copy_message">Copy message</string>
+    <string name="fork_message_details">Message details</string>
+    <string name="fork_logs_copied">Logs copied to clipboard</string>
+    <string name="fork_no_logs">No messages to copy</string>
+    <string name="fork_close">Close</string>
+    <string name="fork_error_authentication">SMB login failed. Check the username, password and (if needed) domain configured for this sync task.</string>
+    <string name="fork_error_permission">Access was denied. Check Android folder permissions and whether the SMB account may read or write to this shared folder.</string>
+    <string name="fork_error_path">The shared folder or file could not be found. Check the share name, folder path, and whether the source still exists.</string>
+    <string name="fork_error_storage">The destination may be full. Check free space on the target storage or NAS.</string>
+    <string name="fork_error_locked">A file is in use by another process. Close it on the server and retry.</string>
+    <string name="fork_error_refused">The SMB connection was refused. Check that SMB file sharing is enabled on the server and port 445 is reachable.</string>
+    <string name="fork_error_network">The server could not be reached. Check Wi-Fi or VPN, the server address and DNS. Try the server IP address.</string>
+    <string name="fork_error_timeout">The connection timed out. Check whether the NAS is awake, the network is stable and SMB port 445 is accessible.</string>
+    <string name="fork_error_protocol">Client and server may disagree on SMB protocol or signing requirements. Check the configured SMB version and server settings.</string>
+    <string name="fork_error_unknown">The operation failed, but the exact cause cannot be identified from this message alone. Copy the technical details below to investigate further.</string>
 </resources>
