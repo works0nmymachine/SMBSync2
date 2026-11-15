@@ -16,6 +16,13 @@
         android:fastScrollEnabled="true">
     </ListView>
     
+    <Button
+        android:id="@+id/main_message_copy_all_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="@string/fork_copy_all_logs"
+        android:textAllCaps="false" />
+
     <include layout="@layout/context_view_message" />
     
 </LinearLayout>
