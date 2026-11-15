@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fork_possible_cause">Mogelijke oorzaak</string>
+    <string name="fork_technical_details">Technische details</string>
+    <string name="fork_copy_all_logs">Kopieer alle logs</string>
+    <string name="fork_copy_message">Kopieer bericht</string>
+    <string name="fork_message_details">Berichtdetails</string>
+    <string name="fork_logs_copied">Logs gekopieerd naar klembord</string>
+    <string name="fork_no_logs">Geen berichten om te kopiëren</string>
+    <string name="fork_close">Sluiten</string>
+    <string name="fork_error_authentication">Aanmelden bij SMB is mislukt. Controleer gebruikersnaam, wachtwoord en eventueel domein in de synchronisatietaak.</string>
+    <string name="fork_error_permission">Toegang geweigerd. Controleer de Android-mapmachtigingen en de lees- en schrijfrechten van dit SMB-account op de gedeelde map.</string>
+    <string name="fork_error_path">De gedeelde map of het bestand is niet gevonden. Controleer de sharenaam en het pad, en of de bron nog bestaat.</string>
+    <string name="fork_error_storage">De doelschijf is mogelijk vol. Controleer de vrije ruimte op de opslag of NAS.</string>
+    <string name="fork_error_locked">Een ander programma gebruikt het bestand. Sluit het op de server en probeer opnieuw.</string>
+    <string name="fork_error_refused">De SMB-verbinding is geweigerd. Controleer of bestandsdeling op de server actief is en poort 445 bereikbaar is.</string>
+    <string name="fork_error_network">De server is niet bereikbaar. Controleer wifi of VPN, serveradres en DNS. Probeer eventueel het IP-adres.</string>
+    <string name="fork_error_timeout">De verbinding duurde te lang. Controleer of de NAS wakker is, het netwerk stabiel is en SMB-poort 445 bereikbaar is.</string>
+    <string name="fork_error_protocol">Client en server gebruiken mogelijk geen compatibele SMB-versie of ondertekening. Controleer het SMB-protocol en de serverinstellingen.</string>
+    <string name="fork_error_unknown">De bewerking is mislukt, maar de exacte oorzaak blijkt niet uit deze melding. Kopieer de technische details hieronder voor nader onderzoek.</string>
+</resources>
