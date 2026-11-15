@@ -5310,8 +5310,14 @@ public class SyncTaskEditor extends DialogFragment {
         nstli.setSyncOptionWifiStatusOption(wifi_sel);
         nstli.setSyncOptionTaskSkipIfConnectAnotherWifiSsid(ctv_task_skip_if_ssid_invalid.isChecked());
         nstli.setSyncOptionSyncAllowGlobalIpAddress(ctv_sync_allow_global_ip_addr.isChecked());
-        nstli.setSyncIncrementalFromTargetNewest(((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_enable)).isChecked());
-        nstli.setSyncIncrementalIncludeOlderChanges(((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_include_old)).isChecked());
+        boolean incrementalSupported=SyncTaskItem.SYNC_TASK_TYPE_COPY.equals(nstli.getSyncTaskType()) &&
+                SyncTaskItem.SYNC_FOLDER_TYPE_INTERNAL.equals(nstli.getMasterFolderType()) &&
+                SyncTaskItem.SYNC_FOLDER_TYPE_SMB.equals(nstli.getTargetFolderType()) &&
+                !nstli.isTargetUseTakenDateTimeToDirectoryNameKeyword();
+        nstli.setSyncIncrementalFromTargetNewest(incrementalSupported &&
+                ((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_enable)).isChecked());
+        nstli.setSyncIncrementalIncludeOlderChanges(incrementalSupported &&
+                ((CheckedTextView)mDialog.findViewById(R.id.edit_sync_task_incremental_include_old)).isChecked());
 
         nstli.setSyncOptionSyncWhenCharging(ctv_task_sync_when_cahrging.isChecked());
 
