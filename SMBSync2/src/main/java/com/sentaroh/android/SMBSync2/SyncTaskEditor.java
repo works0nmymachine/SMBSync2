@@ -3581,6 +3581,52 @@ public class SyncTaskEditor extends DialogFragment {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Context-sensitive help in the task editor. Help never changes the chosen network rule.
+     */
+    private void showWifiOptionHelp(int selection) {
+        final int[] optionLabels = new int[]{
+                R.string.msgs_main_sync_profile_dlg_wifi_option_wifi_off,
+                R.string.msgs_main_sync_profile_dlg_wifi_option_wifi_connect_any_ap,
+                R.string.msgs_main_sync_profile_dlg_wifi_option_wifi_connect_private_address,
+                R.string.msgs_main_sync_profile_dlg_wifi_option_wifi_connect_specific_address
+        };
+        final int[] optionDescriptions = new int[]{
+                R.string.fork_wifi_off_help,
+                R.string.fork_wifi_any_help,
+                R.string.fork_wifi_private_help,
+                R.string.fork_wifi_list_help
+        };
+
+        StringBuilder help = new StringBuilder();
+        for (int i = 0; i < optionLabels.length; i++) {
+            if (i > 0) help.append("\n\n");
+            if (i == selection) help.append("\u2713 ");
+            help.append(mContext.getString(optionLabels[i])).append("\n")
+                    .append(mContext.getString(optionDescriptions[i]));
+        }
+        help.append("\n\n").append(mContext.getString(R.string.fork_wifi_help_recommendation));
+        new android.app.AlertDialog.Builder(getActivity())
+                .setTitle(R.string.fork_wifi_help_title)
+                .setMessage(help.toString())
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private void bindNetworkHelpButton(int viewId, final int titleId, final int messageId) {
+        View button = mDialog.findViewById(viewId);
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new android.app.AlertDialog.Builder(getActivity())
+                        .setTitle(titleId)
+                        .setMessage(messageId)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show();
+            }
+        });
+    }
+
     private void setSpinnerSyncTaskWifiOption(Spinner spinner, String cv) {
         CommonUtilities.setSpinnerBackground(mContext, spinner, mGp.isScreenThemeIsLight());
         final CustomSpinnerAdapter adapter =
@@ -3830,6 +3876,21 @@ public class SyncTaskEditor extends DialogFragment {
         final Spinner spinnerSyncWifiStatus = (Spinner) mDialog.findViewById(R.id.edit_sync_task_option_spinner_wifi_status);
         setSpinnerSyncTaskWifiOption(spinnerSyncWifiStatus, n_sti.getSyncOptionWifiStatusOption());
 
+        // "?" buttons next to network settings; they do not modify any sync setting.
+        mDialog.findViewById(R.id.edit_sync_task_option_wifi_help_btn).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showWifiOptionHelp(spinnerSyncWifiStatus.getSelectedItemPosition());
+            }
+        });
+        bindNetworkHelpButton(R.id.edit_sync_task_option_address_list_help_btn,
+                R.string.fork_wifi_list_help_title, R.string.fork_wifi_list_help_body);
+        bindNetworkHelpButton(R.id.edit_sync_task_option_skip_mismatch_help_btn,
+                R.string.fork_wifi_skip_help_title, R.string.fork_wifi_skip_help_body);
+        bindNetworkHelpButton(R.id.edit_sync_task_option_public_ip_help_btn,
+                R.string.fork_wifi_public_help_title, R.string.fork_wifi_public_help_body);
+        final View publicAddressHelp = mDialog.findViewById(R.id.edit_sync_task_option_public_ip_help_btn);
+
         if ((n_sti.getMasterFolderType().equals(SyncTaskItem.SYNC_FOLDER_TYPE_SMB) || n_sti.getTargetFolderType().equals(SyncTaskItem.SYNC_FOLDER_TYPE_SMB)) &&
                 n_sti.getSyncOptionWifiStatusOption().equals(SyncTaskItem.SYNC_WIFI_STATUS_WIFI_CONNECT_SPECIFIC_AP)) {
             mUtil.showCommonDialog(false, "W", mContext.getString(R.string.msgs_main_permission_ap_list_no_longer_available_dialog_title),
@@ -3859,6 +3920,7 @@ public class SyncTaskEditor extends DialogFragment {
 //                ll_wifi_wl_ap_view.setVisibility(Button.GONE);
                 ll_wifi_wl_address_view.setVisibility(Button.GONE);
                 ctv_sync_allow_global_ip_addr.setVisibility(CheckedTextView.VISIBLE);
+                publicAddressHelp.setVisibility(View.VISIBLE);
 //                if (spinnerSyncWifiStatus.getSelectedItem().toString().equals(mContext.getString(R.string.msgs_main_sync_profile_dlg_wifi_option_wifi_connect_specific_ap))) {
 //                    ll_wifi_wl_view.setVisibility(Button.VISIBLE);
 //                    ll_wifi_wl_ap_view.setVisibility(Button.VISIBLE);
@@ -3866,6 +3928,7 @@ public class SyncTaskEditor extends DialogFragment {
 //                } else
                 if (spinnerSyncWifiStatus.getSelectedItem().toString().equals(mContext.getString(R.string.msgs_main_sync_profile_dlg_wifi_option_wifi_connect_private_address))) {
                     ctv_sync_allow_global_ip_addr.setVisibility(CheckedTextView.GONE);
+                    publicAddressHelp.setVisibility(View.GONE);
                 } else if (spinnerSyncWifiStatus.getSelectedItem().toString().equals(mContext.getString(R.string.msgs_main_sync_profile_dlg_wifi_option_wifi_connect_specific_address))) {
                     ll_wifi_wl_view.setVisibility(Button.VISIBLE);
 //                    ll_wifi_wl_ap_view.setVisibility(Button.GONE);
