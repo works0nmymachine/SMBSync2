@@ -1,0 +1,57 @@
+name: Promote dev to prd
+
+# workflow_dispatch must exist on the repository default branch for the
+# GitHub Actions "Run workflow" button to be visible.
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type PROMOTE to copy the dev branch to prd"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: promote-dev-to-prd
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: Safely fast-forward prd to dev
+    if: ${{ inputs.confirmation == 'PROMOTE' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify and promote
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin \
+            refs/heads/dev:refs/remotes/origin/dev \
+            refs/heads/prd:refs/remotes/origin/prd
+
+          # Never overwrite production history: a regular fast-forward only.
+          if ! git merge-base --is-ancestor origin/prd origin/dev; then
+            echo "::error::prd contains commits not present on dev. Merge/reconcile the branches before promoting."
+            exit 1
+          fi
+
+          dev_sha="$(git rev-parse origin/dev)"
+          prd_sha="$(git rev-parse origin/prd)"
+
+          if [[ "$dev_sha" == "$prd_sha" ]]; then
+            echo "prd is already up to date with dev."
+            exit 0
+          fi
+
+          # Do not force push; GitHub permissions and branch protection still apply.
+          git push origin "$dev_sha:refs/heads/prd"
+          echo "Promoted dev ($dev_sha) to prd."
