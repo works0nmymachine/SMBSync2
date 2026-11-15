@@ -19,4 +19,21 @@
     <string name="fork_error_timeout">The connection timed out. Check whether the NAS is awake, the network is stable and SMB port 445 is accessible.</string>
     <string name="fork_error_protocol">Client and server may disagree on SMB protocol or signing requirements. Check the configured SMB version and server settings.</string>
     <string name="fork_error_unknown">The operation failed, but the exact cause cannot be identified from this message alone. Copy the technical details below to investigate further.</string>
+    <!-- Context help for the SMB network conditions (fork UI). -->
+    <string name="fork_wifi_help_accessibility">Explain Wi-Fi condition</string>
+    <string name="fork_wifi_iplist_help_accessibility">Explain IP address list</string>
+    <string name="fork_wifi_skip_help_accessibility">Explain skipping on a different IP address</string>
+    <string name="fork_wifi_public_help_accessibility">Explain allowing public IP addresses</string>
+    <string name="fork_wifi_help_title">When may sync start?</string>
+    <string name="fork_wifi_help_recommendation">For a local home NAS, an IP address list matching your home network is a practical restriction. This is not a secure way to identify a Wi-Fi network: other networks can use the same address range. Leave public IP addresses disabled unless necessary.</string>
+    <string name="fork_wifi_off_help">No Wi-Fi connection is required. Sync can be attempted over other networks, subject to the public-IP restriction below.</string>
+    <string name="fork_wifi_any_help">Requires an active Wi-Fi connection, but accepts any Wi-Fi network. It does not verify that you are at home.</string>
+    <string name="fork_wifi_private_help">Requires a private IPv4 address (10.x.x.x, 172.16–31.x.x or 192.168.x.x). This could be a different network or VPN, not necessarily home Wi-Fi.</string>
+    <string name="fork_wifi_list_help">Compares an IP address found on this phone against your allowed list. Add the phone\'s home IP or a pattern such as 192.168.1.*. Do not enter the NAS IP unless it is also the phone\'s IP.</string>
+    <string name="fork_wifi_list_help_title">Which IP address belongs in the list?</string>
+    <string name="fork_wifi_list_help_body">Enter your PHONE\'s private IP address on the home network, or its subnet with a wildcard (example: 192.168.1.*). Not the NAS address. Find the phone address in Android Wi-Fi details. Another network can reuse the same range, and VPN or other interfaces may affect which IP the legacy app detects.</string>
+    <string name="fork_wifi_skip_help_title">Skip instead of reporting an error</string>
+    <string name="fork_wifi_skip_help_body">If your phone\'s IP address does not match the list, mark this task as skipped instead of treating it as a sync error. Useful when the task is scheduled and you are away from home.</string>
+    <string name="fork_wifi_public_help_title">Allow public IP addresses</string>
+    <string name="fork_wifi_public_help_body">Allows the task to start even when the phone\'s detected address is public. This does not grant NAS permissions or configure remote access. Leave disabled for normal backups to a NAS at home.</string>
 </resources>
